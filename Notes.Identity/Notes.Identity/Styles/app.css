@@ -1,0 +1,43 @@
+﻿/*селектор с . используется для всех тегов с классом N
+    селектор с # используется для всех тегов с id N
+    селектор без точки используется для всех тегов с названием N
+*/
+.body {
+    background-color: aqua;
+}
+.input {
+    font-size:16px;
+    font-family: Arial;
+    background-color:bisque;
+    width: 100%;
+}
+.header {
+    font-family: Arial;
+    color:burlywood;
+    font-size: 30px;
+    text-align: center;
+}
+.button {
+    font-size: 16px;
+    background-color: aliceblue;
+    border-radius: 4px;
+    color: #332600;
+    font-family: Arial;
+    width: 100%;
+}
+
+.block {
+    margin-top: 10px;
+
+}
+
+.switch-button {
+    margin: 8px;
+    font-size: 8px;
+    border-radius: 4px;
+    color: coral;
+    font-family: Arial;
+    display:inline-block;
+    text-align: center;
+    width: 100%;
+}

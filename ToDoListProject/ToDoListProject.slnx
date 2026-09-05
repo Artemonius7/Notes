@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Core/">
+    <Project Path="Notes.Application/Notes.Application.csproj" />
+    <Project Path="Notes.Domain/Notes.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Note.Persistence/Notes.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/Presentation/">
+    <Project Path="Notes.WebAPI/Notes.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Notes.Tests/Notes.Tests.csproj" Id="6e3b2082-872e-4d54-b93d-e43b6e763c15" />
+  </Folder>
+</Solution>
