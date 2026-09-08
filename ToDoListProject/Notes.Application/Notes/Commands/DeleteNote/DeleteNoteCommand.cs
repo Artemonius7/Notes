@@ -13,3 +13,4 @@ namespace Notes.Application.Notes.Commands.DeleteNote
         public Guid Id { get; set; }
     }
 }
+//
