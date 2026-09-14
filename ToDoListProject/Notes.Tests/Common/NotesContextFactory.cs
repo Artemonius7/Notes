@@ -11,10 +11,12 @@ namespace Notes.Tests.Common
 {
     internal class NotesContextFactory
     {
-        public static Guid UserAId = new Guid();
-        public static Guid UserBId = new Guid();
-        public static Guid NotesIdForDelete = new Guid();
-        public static Guid NotesIdForUpdate = new Guid();
+        public static Guid UserAId = Guid.NewGuid();
+        public static Guid UserBId = Guid.NewGuid();
+        public static Guid NotesIdForUserA = Guid.NewGuid();
+        public static Guid NotesIdForUserB = Guid.NewGuid();
+        public static Guid NotesIdForDelete = Guid.NewGuid();
+        public static Guid NotesIdForUpdate = Guid.NewGuid();
         public static NotesDbContext Create()
         {
             var options = new DbContextOptionsBuilder<NotesDbContext>()
@@ -28,7 +30,7 @@ namespace Notes.Tests.Common
                     CreationDate = DateTime.Now,
                     Details = "Details1",
                     EditDate = null,
-                    Id = Guid.NewGuid(),
+                    Id = NotesIdForUserA,
                     Title = "Title1",
                     UserId = UserAId
                 },
@@ -37,7 +39,7 @@ namespace Notes.Tests.Common
                     CreationDate = DateTime.Now,
                     Details = "Details2",
                     EditDate = null,
-                    Id = Guid.NewGuid(),
+                    Id = NotesIdForUserB,
                     Title = "Title2",
                     UserId = UserBId
                 },
@@ -46,7 +48,7 @@ namespace Notes.Tests.Common
                     CreationDate = DateTime.Now,
                     Details = "Details3",
                     EditDate = null,
-                    Id = Guid.NewGuid(),
+                    Id = NotesIdForDelete,
                     Title = "Title3",
                     UserId = UserAId
                 },
@@ -55,7 +57,7 @@ namespace Notes.Tests.Common
                     CreationDate = DateTime.Now,
                     Details = "Details4",
                     EditDate = null,
-                    Id = Guid.NewGuid(),
+                    Id = NotesIdForUpdate,
                     Title = "Title4",
                     UserId = UserBId
                 }

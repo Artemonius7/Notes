@@ -27,7 +27,7 @@ namespace Notes.Tests.Notes.Commands
                     Id = NotesContextFactory.NotesIdForUpdate,
                     Title = noteTitle,
                     Details = noteDetails,
-                    UserId = NotesContextFactory.UserAId
+                    UserId = NotesContextFactory.UserBId
                 }, CancellationToken.None);
             // Assert
             Assert.NotNull(
@@ -50,7 +50,7 @@ namespace Notes.Tests.Notes.Commands
                         Id = Guid.NewGuid(),
                         Title = noteTitle,
                         Details = noteDetails,
-                        UserId = NotesContextFactory.UserAId
+                        UserId = NotesContextFactory.UserBId
                     }, 
                     CancellationToken.None));
         }

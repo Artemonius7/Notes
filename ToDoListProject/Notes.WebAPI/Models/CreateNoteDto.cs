@@ -1,12 +1,15 @@
 ﻿using Notes.Application.Common.Mapping;
 using Notes.Application.Notes.Commands.CreateNote;
 using AutoMapper;
+using System.ComponentModel.DataAnnotations;
 namespace Notes.WebAPI.Models
 {
     public class CreateNoteDto: IMapWith<CreateNoteCommand>
     {
-        public string Title { get; set; }
-        public string Details { get; set; }
+        [Required] // Нужен для валидации входящих данных и возвращения соответствующих HTTP-ответов, поле ниже становится обязательным
+        public string? Title { get; set; }
+        [Required]
+        public string? Details { get; set; }
         public void Mapping(Profile profile)
         {
             profile.CreateMap<CreateNoteDto, CreateNoteCommand>().

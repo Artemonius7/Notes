@@ -23,7 +23,7 @@ namespace Notes.Tests.Notes.Commands
                 new DeleteNoteCommand
                 {
                     Id = NotesContextFactory.NotesIdForDelete,
-                    UserId = NotesContextFactory.UserAId
+                    UserId = NotesContextFactory.UserAId,
                 }, CancellationToken.None);
                  Assert.Null(
                      await Context.Notes.SingleOrDefaultAsync(note =>
@@ -58,7 +58,7 @@ namespace Notes.Tests.Notes.Commands
                     new DeleteNoteCommand
                     {
                         Id= noteID, 
-                        UserId = NotesContextFactory.UserAId
+                        UserId = NotesContextFactory.UserBId
                     }, CancellationToken.None));
 
         }

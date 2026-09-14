@@ -2,14 +2,17 @@
 using Notes.Application.Common.Mapping;
 using Notes.Application.Notes.Commands.UpdateNote;
 using Notes.WebAPI.Controllers;
+using System.ComponentModel.DataAnnotations;
 
 namespace Notes.WebAPI.Models
 {
     public class UpdateNoteDto: IMapWith<UpdateNoteCommand>
     {
         public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Details { get; set; }
+        [Required]
+        public string? Title { get; set; }
+        [Required]
+        public string? Details { get; set; }
         public void Update (Profile profile)
         {
             profile.CreateMap<UpdateNoteDto, UpdateNoteCommand>().ForMember(noteCommand =>

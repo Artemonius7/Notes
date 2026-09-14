@@ -8,7 +8,7 @@ namespace Notes.Application.Notes.Commands.UpdateNote
     {
         public Guid UserId { get; set; }
         public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Details { get; set; }
+        public string Title { get; set; } = string.Empty; // Гарантирует, что значение не будет пустым
+        public string Details { get; set; } = string.Empty; // Гарантирует, что значение не будет пустым
     }
 }
