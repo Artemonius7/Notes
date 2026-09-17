@@ -66,23 +66,22 @@ public class Configuration
             {
                 ClientId = "notes-web-api",
                 ClientName = "Notes Web",
-                AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
+                AllowedGrantTypes = GrantTypes.Code,
                 RequireClientSecret = false, // Пароль клиента не нужен
                 RequirePkce = true,
                 RedirectUris =
                 {
-                    "http://.../signin-oidc" // перенаправление после аутентификации клиентского приложения
+                    "http://localhost:3000/signin-oidc" // перенаправление после аутентификации клиентского приложения
                 },
                 AllowedCorsOrigins =
                 {
-                    "http://..."
+                    "http://localhost:3000"
                 },
                 PostLogoutRedirectUris =
                 {
-                    "http://.../signout-oidc" // перенаправление после выхода из авторизованного режима клиента
+                    "http://localhost:3000/signout-oidc" // перенаправление после выхода из авторизованного режима клиента
                 },
-
-                AllowedScopes =
+                AllowedScopes = // Доступные области для нашего клиента, чтобы мы могли с фронтенда получить доступ к IdentityServer
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,

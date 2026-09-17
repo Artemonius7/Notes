@@ -8,5 +8,5 @@
     <div class="button">
         <button type="submit" class="button">Log Out</button>
     </div>
-    <a asp-controller="Logout" asp-action="Logout" asp-route-returnurl="@Model.ReturnUrl" class="switch-button">Logout</a>
+    <a href="@Url.Action("Logout", "Logout", new { returnUrl = Model.ReturnUrl })" class="switch-button">Logout</a>
 </form>

@@ -9,15 +9,16 @@ using Duende.IdentityServer.Test;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
-using Microsoft.Extensions.FileProviders;
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DBConnection");
 // Добавляем контекст базы данных
 // Можно писать как options, так и config : это обычная переменная, которая отличается лишь названием и не несет системной смысловой нагрузки
+var dbPath = Path.Combine(builder.Environment.ContentRootPath, "AuthUsers.db");
+var connectionString = $"Data Source={dbPath}";
 builder.Services.AddDbContext<AuthDbContext>(options =>
 {
     options.UseSqlite(connectionString);
 });
+
 builder.Services.AddIdentity<AppUser, IdentityRole>(config =>
 {
     // Подключаем Microsoft.AspNetCore.Identity и Notes.Identity.Models
@@ -56,6 +57,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = serviceProvider.GetRequiredService<AuthDbContext>();
+        context.Database.Migrate();
         DbInitializer.Initialize(context);
     }
     // Обработка исключения и запись в логи

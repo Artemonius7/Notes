@@ -11,10 +11,14 @@ using Notes.Application.Notes.Commands.DeleteNote;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Asp.Versioning;
 namespace Notes.WebAPI.Controllers
 {
     [Produces("application/json")] // Контроллеры возвращают ответы в формате JSON-документа
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")] // Указывает, к какой версии принадлежит контроллер
+    [ApiVersion("1.1")]
+    //[ApiVersionNeutral] // Контроллеры будут вызваны для любой версии API
+    [Route("api/v{version:apiVersion}/[controller]")] // Добавляем версионирование через URL-сегмент и передаем версию API как параметр
     public class NoteController : BaseController
     {
         // summary необходим для описания нашего метода и для добавления комментария в XML-Документ для работы со Swagger'ом

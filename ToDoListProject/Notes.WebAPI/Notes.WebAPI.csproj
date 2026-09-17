@@ -1,27 +1,42 @@
 ﻿<!--Главный файл конфигурации нашего проекта Notes.WebAPI-->
-<Project Sdk="Microsoft.NET.Sdk.Web"> <!--Тег для обозначения того, что этот проект является WebAPI-ресурсом-->
+<Project Sdk="Microsoft.NET.Sdk.Web">
+	<!--Тег для обозначения того, что этот проект является WebAPI-ресурсом-->
 
-  <PropertyGroup> <!--Блок основных настроек проекта-->
-    <TargetFramework>net10.0</TargetFramework> <!--Версия используемой платформы-->
-    <Nullable>enable</Nullable> <!--Включает режим отслеживания пустых (нулевых) ссылочных типов для защиты от NullReferenceException-->
-    <ImplicitUsings>enable</ImplicitUsings>
-	  <!--Автоматически подключает базовые using-директивы к проектам в одном решении-->
-	<GenerateDocumentationFile>true</GenerateDocumentationFile> <!--Генерация отдельного XML-файла для хранения описаний методов, HTTP-запросов, роутингов и контроллеров, которые имеют XML-комментарии-->
-	<NoWarn>$(NoWarn);1591</NoWarn> <!--Отключает предупреждение Missing XML comment for publicly visible type or member-->
-  </PropertyGroup>
+	<PropertyGroup>
+		<!--Блок основных настроек проекта-->
+		<TargetFramework>net10.0</TargetFramework>
+		<!--Версия используемой платформы-->
+		<Nullable>enable</Nullable>
+		<!--Включает режим отслеживания пустых (нулевых) ссылочных типов для защиты от NullReferenceException-->
+		<ImplicitUsings>enable</ImplicitUsings>
+		<!--Автоматически подключает базовые using-директивы к проектам в одном решении-->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<!--Генерация отдельного XML-файла для хранения описаний методов, HTTP-запросов, роутингов и контроллеров, которые имеют XML-комментарии-->
+		<NoWarn>$(NoWarn);1591</NoWarn>
+		<!--Отключает предупреждение Missing XML comment for publicly visible type or member-->
+	</PropertyGroup>
 
-  <ItemGroup>  <!--Список установленных NuGet-пакетов-->
-    <PackageReference Include="Duende.IdentityServer" Version="8.0.2" />
-    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="8.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.17.3" />
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<!--Список установленных NuGet-пакетов-->
+		<!-- Новое версионирование (Asp.Versioning) -->
+		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
 
-  <ItemGroup> <!--Ссылка на другие проекты из нашего решения, с которыми взаимодействует наш проект Notes.WebAPI-->
-    <ProjectReference Include="..\Note.Persistence\Notes.Persistence.csproj" /> <!--Слой работы с Базой данных, сущностями-->
-    <ProjectReference Include="..\Notes.Application\Notes.Application.csproj" /> <!--Слой работы с бизнес-логикой приложения-->
-  </ItemGroup>
+		<!-- Аутентификация и безопасность -->
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+
+		<!-- Swagger и OpenAPI (Совместимый пакет Swashbuckle) -->
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+
+		<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!--Ссылка на другие проекты из нашего решения, с которыми взаимодействует наш проект Notes.WebAPI-->
+		<ProjectReference Include="..\Note.Persistence\Notes.Persistence.csproj" />
+		<!--Слой работы с Базой данных, сущностями-->
+		<ProjectReference Include="..\Notes.Application\Notes.Application.csproj" />
+		<!--Слой работы с бизнес-логикой приложения-->
+	</ItemGroup>
 
 </Project>

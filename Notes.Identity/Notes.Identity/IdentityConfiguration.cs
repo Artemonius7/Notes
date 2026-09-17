@@ -26,8 +26,8 @@ namespace Notes.Identity
                 {
                     new Client
                     {
-                        ClientId="notes-web-app",
-                        ClientName="Notes Web Application",
+                        ClientId="notes-web-api",
+                        ClientName="Notes Web ",
                         AllowedGrantTypes = GrantTypes.Code,
                         RequirePkce = true,
                         AllowedScopes =
@@ -36,8 +36,8 @@ namespace Notes.Identity
                             IdentityServerConstants.StandardScopes.Profile,
                             "NotesAPI"
                         },
-                        RedirectUris = {"https://localhost:7001/signin-oidc"},
-                        PostLogoutRedirectUris = { "https://localhost:7001/signout-callback-oidc"},
+                        RedirectUris = {"http://localhost:3000/signin-oidc"},
+                        PostLogoutRedirectUris = { "http://localhost:3000/signout-callback-oidc"},
                         AllowOfflineAccess = true // использование Refresh Token
 
                     }

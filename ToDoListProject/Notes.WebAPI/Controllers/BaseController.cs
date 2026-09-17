@@ -6,12 +6,24 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Notes.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")] // маршрут для контроллеров и действий
+    [Route("api/v{version:apiVersion}/[controller]/[action]")] // маршрут для контроллеров и действий
     public abstract class BaseController: ControllerBase
 
     {
-        public IMediator _mediator; 
+        public IMediator? _mediator;
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>(); // для формирования команд при выполнении запросов
-        internal Guid UserId => !User.Identity.IsAuthenticated ? Guid.Empty : Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value); // получение ид пользователя
+        // Безопасное получение ID текущего пользователя из JWT-токена
+        internal Guid UserId
+        {
+            get
+            {
+                if (User.Identity?.IsAuthenticated != true)
+                    return Guid.Empty;
+
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                return Guid.TryParse(userIdClaim, out var userId) ? userId : Guid.Empty;
+            }
+        }
     }
 }
