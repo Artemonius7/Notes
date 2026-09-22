@@ -1,62 +1,59 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Duende.IdentityServer.Services;
+using Duende.IdentityServer;
+using Microsoft.AspNetCore.Authentication;
 using Notes.Identity.Models;
 
 namespace Notes.Identity.Controllers
 {
-    [Route("Register")]
-    public class RegisterController : Controller
+    [Route("api/auth")]
+    [ApiController]
+    public class RegisterController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IIdentityServerInteractionService _interaction;
 
-        public RegisterController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
-            => (_userManager, _signInManager) = (userManager, signInManager);
+        public RegisterController(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            IIdentityServerInteractionService interaction)
+            => (_userManager, _signInManager, _interaction) = (userManager, signInManager, interaction);
 
-        [HttpGet]
+        [HttpGet("register")]
         public IActionResult Register(string returnUrl)
         {
             var user = new RegisterViewModel
             {
                 ReturnUrl = returnUrl
             };
-
-            // Явно указываем путь к представлению, чтобы избежать ошибки ViewNotFound
-            return View("~/Views/Register/Register.cshtml", user);
+            string token = "token"; // работает как заглушка для проверки данных от регистрации до сохранения в LocalStorage
+            return Ok(new { token = token });
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterViewModel viewModel)
         {
             if (!ModelState.IsValid)
-                return View("~/Views/Register/Register.cshtml", viewModel);
+            {
+                return BadRequest(new { message = "Невалидные данные" });
+            }
 
             var user = new AppUser
             {
-                  UserName = viewModel.Login
+                UserName = viewModel.Login
             };
 
             var result = await _userManager.CreateAsync(user, viewModel.Password);
 
             if (result.Succeeded)
             {
-                // После успешной регистрации лучше всего перенаправить пользователя 
-                // обратно на страницу логина (сохранив ReturnUrl), чтобы он зашел штатно через OIDC
-                if (!string.IsNullOrEmpty(viewModel.ReturnUrl))
-                {
-                    // Возвращаем на логин, пробрасывая ReturnUrl дальше
-                    return RedirectToAction("Login", "Auth", new { returnUrl = viewModel.ReturnUrl });
-                }
-
-                return Redirect("~/");
+                string token = "token";
+                return Ok(new { token = token });
             }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-
-            return View("~/Views/Register/Register.cshtml", viewModel);
+            var errors = string.Join(",", result.Errors.Select(e => e.Description));
+            return BadRequest(new { message = errors });
         }
     }
 }

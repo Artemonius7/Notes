@@ -37,13 +37,14 @@ builder.Services.AddMediatR(cfg =>
 // Регистрируем валидаторы из сборки
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
+// Добавляем политику CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.AllowAnyOrigin();
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod();
+        policy.WithOrigins("http://localhost:3000") // Разрешаем любые HTTP-запросы с данного порта
+              .AllowAnyHeader() // Разрешаем любые заголовки
+              .AllowAnyMethod(); // Разрешаем методы
     });
 });
 
@@ -87,7 +88,7 @@ builder.Services.AddApiVersioning(options =>
 });
 
 var app = builder.Build(); // Сборка приложения
-
+app.UseRouting(); // Включаем использование роутинга
 using (var scope = app.Services.CreateScope()) // Добавление сервисов, которые имеют жизненный цикл scoped
 {
     var service = scope.ServiceProvider; // Получение сервиса
@@ -106,7 +107,7 @@ using (var scope = app.Services.CreateScope()) // Добавление сервисов, которые и
 // Настройка middleware
 app.UseCustomExceptionHandler();
 //app.UseHttpsRedirection(); // Перенаправление с http на https
-
+app.UseCors("AllowReactApp"); // CORS - это технология защиты от межсайтового доступа
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger(); // Считывание всех эндпоинтов контроллеров, http-методов, DTO-объектов и формирование единого JSON-документа для генерации страницы
@@ -123,9 +124,6 @@ if (app.Environment.IsDevelopment())
         config.RoutePrefix = String.Empty; // делает Swagger UI главной страницей при запуске
     });
 }
-
-app.UseRouting(); // Включаем использование роутинга
-app.UseCors("AllowAll"); // CORS - это технология защиты от межсайтового доступа
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers(); // новый метод регистрации эндпоинтов

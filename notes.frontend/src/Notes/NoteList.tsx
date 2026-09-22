@@ -2,7 +2,24 @@ import React, {FC,ReactElement,useRef,useEffect,useState} from 'react'; // Им�
 import { CreateNoteDto, Client, NoteLookupDto} from '../api/api'; // импорт из NSwag
 import { FormControl } from 'react-bootstrap'; // импорт из Bootstrap
 
-const apiClient = new Client('http://localhost:5237'); // порт бэкенда для обработки запросов
+const getAuthenticatedClient = () => {
+    const token = localStorage.getItem('token');
+    return new Client("http://localhost:5237", {
+        fetch(url: RequestInfo ,init?: RequestInit):Promise<Response>
+        {
+            const headers = new Headers(init?.headers);
+            if (token)
+            {
+                headers.set('Authorization', `Bearer ${token}`);
+            }
+            // Возвращаем стандартный fetch с обновленными заголовками
+            return window.fetch(url, {
+                ...init,
+                headers,
+            });
+        }
+    });
+};
 
 export const NoteList: FC<{}> =(): ReactElement => { // FC - функциональный компонент React
     const textInput = useRef<HTMLInputElement>(null);  // Работа с полем ввода
@@ -11,19 +28,21 @@ export const NoteList: FC<{}> =(): ReactElement => { // FC - функциона�
     // Функция загрузки и чтения заметок из back-end'a
     const getNotes = async()=>{
         try{
+            const apiClient = getAuthenticatedClient();
             const noteListVm = await apiClient.getAll();
             setNotes(noteListVm.notes);
         } catch (error) { // Перехват исключения
             console.error('Ошибка при получении заметок:',error);
         }
     };
-    // выполнение побочных эффектов на странице браузера, в нашем случае, получение спсика заметок
+    // выполнение побочных эффектов на странице браузера, в нашем случае, получение списка заметок
     useEffect(() =>{
         getNotes();
     },[]);
     // Создание заметки (Новая функция)
     const createNote = async (note:CreateNoteDto) =>{
         try{
+            const apiClient = getAuthenticatedClient();
             await apiClient.create(note);
             console.log('Заметка создана!');
         } catch (error) {
@@ -49,7 +68,7 @@ export const NoteList: FC<{}> =(): ReactElement => { // FC - функциона�
         <div>
             Notes
             <div>
-                <FormControl ref={textInput} onKeyDown={handleKeyPress} />
+                <FormControl ref={textInput} onKeyDown={handleKeyPress} /> 
             </div>
             <div>
                 {notes?.map((note: NoteLookupDto, index: number) => (

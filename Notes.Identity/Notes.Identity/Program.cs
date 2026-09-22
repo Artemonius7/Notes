@@ -23,31 +23,47 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(config =>
 {
     // Подключаем Microsoft.AspNetCore.Identity и Notes.Identity.Models
     // Настраиваем конфигурацию для пароля 
-    config.Password.RequiredLength = 4;
-    config.Password.RequireDigit = false;
-    config.Password.RequireNonAlphanumeric = false;
-    config.Password.RequireUppercase = false;
+    config.Password.RequiredLength = 3; // Минимальная длина паролей
+    config.Password.RequireDigit = false; // Делаем цифры необязательными
+    config.Password.RequireNonAlphanumeric = false; // Спецсимволы не нужны
+    config.Password.RequireUppercase = false; // Заглавные буквы не обязательны
+    config.Password.RequireLowercase = false; // Строчные буквы не нужны
 })
-    .AddEntityFrameworkStores<AuthDbContext>()
-    .AddDefaultTokenProviders(); // Для обновления и получения токенов доступа
+.AddEntityFrameworkStores<AuthDbContext>()
+.AddDefaultTokenProviders(); // Для обновления и получения токенов доступа
 
-builder.Services.AddIdentityServer()
+builder.Services.AddIdentityServer(options =>
+{
+    options.Authentication.CookieSameSiteMode = SameSiteMode.Lax;
+    options.EmitStaticAudienceClaim = true;
+})
     .AddAspNetIdentity<AppUser>()
     .AddInMemoryApiResources(Configuration.ApiResources)
     .AddInMemoryApiScopes(Configuration.ApiScopes)
     .AddInMemoryIdentityResources(Configuration.IdentityResources)
     .AddInMemoryClients(Configuration.Clients)
-    .AddDeveloperSigningCredential()
-    .AddTestUsers(Configuration.Users.ToList());
+    .AddDeveloperSigningCredential();
 builder.Services.ConfigureApplicationCookie(config =>
 {
     config.Cookie.Name = "Notes.Identity.Server";
     config.LoginPath = "/Auth/Login";
     config.LogoutPath = "/Auth/Logout";
+    config.Cookie.HttpOnly = true;
+    config.Cookie.SameSite = SameSiteMode.None;
+    config.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 });
 builder.Services.AddControllersWithViews(); // Добавление контроллеров и представлений для нашего приложения
 var app = builder.Build();
-
+app.UseRouting(); // ИСпользовать маршрутизацию контроллеров
 // Проверка на существование контекста базы данных в рамках запроса?
 // Scope - Это как один рабочий сеанс, в рамках которого мы будем проверять наш контекст базы данных
 // Using - гарантия того, что ресурсы внутри этого блока будут очищены после завершения сеанса с контекстом базы данных при получении http-запроса от пользователя
@@ -68,8 +84,10 @@ using (var scope = app.Services.CreateScope())
     }
 
 }
-app.UseRouting(); // ИСпользовать маршрутизацию контроллеров
+app.UseCors("AllowReactApp");
+app.UseAuthentication();
 app.UseIdentityServer();
+app.UseAuthorization();
 app.UseEndpoints(endpoint =>
 {
     endpoint.MapDefaultControllerRoute(); // Маппинг роутинга по имени контроллеров

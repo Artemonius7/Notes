@@ -12,6 +12,10 @@ import SignInOidc from './auth/SigninOidc';
 import SignOutOidc from './auth/signoutOidc';
 import userManager from './auth/user-service';
 import NoteList from './Notes/NoteList';
+import HomePage from './HomePage/HomePage';
+import LoginPage from './LoginPage/LoginPage';
+import { RegisterPage } from './RegisterPage/RegisterPage';
+import {ProtectedRoute} from './components/ProtectedRoute'
 const App: FC <{}> = (): ReactElement => {
   useEffect(()=>
   {
@@ -19,23 +23,20 @@ const App: FC <{}> = (): ReactElement => {
   }, []); // Обернули loadUser с пустым массивом зависимостей
   return (
     <div className="App">
-      <header className="App-header">
+      <header className='App-header'>
         <AuthProvider userManager={userManager}>
-          <Router>
-            <Routes>
-                <Route path="/" element={<NoteList/>} />
-                <Route 
-                    path='/signout-oidc'
-                    element={<SignOutOidc/>}
-                />
-                <Route 
-                    path='/signin-oidc'
-                    element={<SignInOidc/>}
-                />
-            </Routes>
-          </Router>
-        </AuthProvider>
-        <button className = "login-button" onClick={()=> signinRedirect()}>Login</button> 
+            <Router>
+              <Routes>
+                  {/* Главная публичная страница при запуске приложения */}
+                  <Route path='/' element = {<HomePage/>}/>
+                  {/* Подключаем страницы регистрации и авторизации*/}
+                  <Route path='/LoginPage' element={<LoginPage/>}/> {/*Аналогично, только с выходом, перенаправляем на главную страницу*/}
+                  <Route path='/RegisterPage' element={<RegisterPage/>}/>
+                  {/* Личная страница пользователя после успешного получения токена */}
+                  <Route path='/notes' element={<ProtectedRoute><NoteList/></ProtectedRoute>}/>
+              </Routes>
+            </Router>
+          </AuthProvider>
       </header>
     </div>
   );

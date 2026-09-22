@@ -37,7 +37,7 @@
   }
 }
 
-.login-button {
+.home-button {
   margin-top: 20px;          /* Отступ сверху от предыдущих элементов */
   padding: 10px 24px;        /* Внутренние отступы (размер кнопки) */
   font-size: 16px;           /* Размер текста */
@@ -48,6 +48,6 @@
   transition: background-color 0.2s;
 }
 
-.login-button:hover {
+.home-button:hover {
   background-color: #4fa8c7; /* Цвет при наведении мыши */
 }

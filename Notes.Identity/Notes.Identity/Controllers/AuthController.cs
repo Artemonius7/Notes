@@ -2,56 +2,81 @@
 using Notes.Identity.Models;
 using Duende.IdentityServer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Components;
-using Route = Microsoft.AspNetCore.Mvc.RouteAttribute;
 using Duende.IdentityServer.Services;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.AspNetCore.Mvc.ModelBinding; // Алиас для создания переменной для указания маршрута для контроллера, используя библиотеку
+
 namespace Notes.Identity.Controllers
 {
-    [Route("Auth")]
-    public class AuthController:Controller // Контроллер для аутентификации
+    [Route("api/auth")]
+    [ApiController]
+    public class AuthController : Controller
     {
-        // private readonly отвечает за хранение ссылок внутри контроллера, чтобы их использовать в любом методе класса
-        private readonly UserManager<AppUser> _userManager; // нужен дял управления пользователями и их данных
-        private readonly SignInManager<AppUser> _signInManager; // отвечает за аутентификацию пользователя и его права доступа
-        private readonly IIdentityServerInteractionService _interactionService; // Отвечает за логаут пользователя
-        // Конструктор для инициализации пользователя
-        public AuthController (UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IIdentityServerInteractionService interactionService)
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IIdentityServerInteractionService _interactionService;
+
+        public AuthController(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            IIdentityServerInteractionService interactionService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _interactionService = interactionService;
         }
-        [HttpGet("Login")]
-        public IActionResult Login(string returnUrl) // открытие страницы для ввода логина и пароля ( пустая форма)
+        [HttpGet("login")]
+        public async Task<IActionResult> Login(string returnUrl)
         {
-            var viewModel = new LoginViewModel // LoginViewModel - это класс, который используется для упаковки данных между контроллером и представлением 
+            if (User.Identity.IsAuthenticated)
+            {
+                var context = await _interactionService.GetAuthorizationContextAsync(returnUrl, HttpContext.RequestAborted);
+                if (context != null || _interactionService.IsValidReturnUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                return Redirect("http://localhost:3000");
+            }
+
+            var viewModel = new LoginViewModel
             {
                 ReturnUrl = returnUrl
             };
-            return View(viewModel); // Возвращает представление (HTML-страницу) с формой логина
+            return View(viewModel);
         }
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginViewModel viewModel) // срабатывает, когда пользователь отправляет форму (после ввода данных и нажатия кнопки "Войти"
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
-            if (!ModelState.IsValid) // ModelState знает о состоянии View-модели
-                return View(viewModel); // если данные не прошли валидацию
-
-            var user = await _userManager.FindByNameAsync(viewModel.Login); // Отвечает за CRUD пользователей
-            if (user==null)
+            if (string.IsNullOrEmpty(viewModel.ReturnUrl))
             {
-                ModelState.AddModelError("", "Неверный логин или пароль"); // Ошибка о состоянии модели
+                viewModel.ReturnUrl = HttpContext.Request.Query["returnUrl"];
+            }
+
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+            var user = await _userManager.FindByNameAsync(viewModel.Login);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Неверный логин или пароль");
                 return View(viewModel);
             }
-            // SignManager отвечает за вход пользователя и его право доступа
-            var result = await _signInManager.PasswordSignInAsync(user, viewModel.Password, isPersistent: false, lockoutOnFailure: false); //isPersistent связан с сохранением последующей аутентификации, Lockout - для блокировки аккаунта в случае нескольких неудачных попыток
+
+            var result = await _signInManager.PasswordSignInAsync(user, viewModel.Password, isPersistent: false, lockoutOnFailure: false);
             if (!result.Succeeded)
             {
                 ModelState.AddModelError("", "Неверный логин или пароль");
                 return View(viewModel);
             }
-            return Redirect(viewModel.ReturnUrl ?? "/"); // Перенаправление браузера на следующий URL
+
+            if (!string.IsNullOrEmpty(viewModel.ReturnUrl))
+            {
+                var context = await _interactionService.GetAuthorizationContextAsync(viewModel.ReturnUrl, HttpContext.RequestAborted);
+                if (context != null || _interactionService.IsValidReturnUrl(viewModel.ReturnUrl))
+                {
+                    return Redirect(viewModel.ReturnUrl);
+                }
+            }
+
+            return Redirect("http://localhost:3000");
         }
     }
 }

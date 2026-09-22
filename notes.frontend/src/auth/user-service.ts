@@ -13,6 +13,8 @@ const userManagerSettings: UserManagerSettings =
     scope: 'openid profile NotesWebAPI', // Права и данные, которые запрашивает пользователь
     authority: 'http://localhost:5026', // URL-адрес сервера идентификации(какой порт слушает)
     post_logout_redirect_uri: 'http://localhost:3000/signout-oidc', // куда вернуть пользователя после выхода
+    automaticSilentRenew: false,
+    monitorSession: false,
 };
 // Дублируем доступные области из нашего сервера идентификации
 const userManager = new UserManager(userManagerSettings); // Инициализируем менеджера по работе с пользователями и передаем ему настройки для работы с сервером идентификации
@@ -27,6 +29,8 @@ export async function loadUser() // Проверяет, есть ли уже с�
 export const signinRedirect = () => userManager.signinRedirect(); // Создание ссылки дял перенаправления
 
 export const signinRedirectCallback = () => userManager.signinRedirectCallback(); // Вызов
+
+
 
 export const signoutRedirect = (args?: any) => { // Удаление пользователя(очистка локальных данных) и перенаправление
     userManager.clearStaleState();
