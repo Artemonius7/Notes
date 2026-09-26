@@ -8,7 +8,6 @@ namespace Notes.WebAPI.Models
     {
         [Required] // Нужен для валидации входящих данных и возвращения соответствующих HTTP-ответов, поле ниже становится обязательным
         public string? Title { get; set; }
-        [Required]
         public string? Details { get; set; }
         public void Mapping(Profile profile)
         {

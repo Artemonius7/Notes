@@ -26,7 +26,7 @@ export async function loadUser() // Проверяет, есть ли уже с�
     setAuthHeader(token);
 }
 
-export const signinRedirect = () => userManager.signinRedirect(); // Создание ссылки дял перенаправления
+export const signinRedirect = () => userManager.signinRedirect(); // Создание ссылки ддя перенаправления
 
 export const signinRedirectCallback = () => userManager.signinRedirectCallback(); // Вызов
 

@@ -301,7 +301,7 @@ export class Client extends ClientBase {
 
 export interface CreateNoteDto {
     title: string;
-    details: string;
+    details?: string | undefined;
 }
 
 export interface NoteDetailsVm {

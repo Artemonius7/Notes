@@ -12,7 +12,10 @@ using Notes.Persistence;
 using Notes.WebAPI;
 using Notes.WebAPI.Middleware;
 using Swashbuckle.AspNetCore.SwaggerGen;
-
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens.Experimental;
+using System.Text;
 var builder = WebApplication.CreateBuilder(args); // Создание иструкций для приложения
 
 // Регистрация зависимостей и сервисов
@@ -59,6 +62,16 @@ builder.Services.AddAuthentication(config =>
     config.Authority = "http://localhost:5026"; // какому серверу доверять
     config.Audience = "NotesWebAPI"; // Для кого этот доступ, имя заголовка токена доверенного сервера
     config.RequireHttpsMetadata = false;
+    config.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = "NotesIdentityServer",
+        ValidateAudience = true,
+        ValidAudience = "NotesWebAPI",
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SuperSecretKeyForNotesApp1234567890!@")),
+        ValidateIssuerSigningKey = true
+    };
 });
 
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();

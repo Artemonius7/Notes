@@ -4,6 +4,7 @@ using Duende.IdentityServer.Services;
 using Duende.IdentityServer;
 using Microsoft.AspNetCore.Authentication;
 using Notes.Identity.Models;
+using Notes.Identity.Token;
 
 namespace Notes.Identity.Controllers
 {
@@ -14,26 +15,16 @@ namespace Notes.Identity.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IIdentityServerInteractionService _interaction;
-
+        private readonly JwtTokenService _jwtTokenService;
         public RegisterController(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            IIdentityServerInteractionService interaction)
-            => (_userManager, _signInManager, _interaction) = (userManager, signInManager, interaction);
-
-        [HttpGet("register")]
-        public IActionResult Register(string returnUrl)
-        {
-            var user = new RegisterViewModel
-            {
-                ReturnUrl = returnUrl
-            };
-            string token = "token"; // работает как заглушка для проверки данных от регистрации до сохранения в LocalStorage
-            return Ok(new { token = token });
-        }
+            IIdentityServerInteractionService interaction,
+            JwtTokenService jwtTokenService)
+            => (_userManager, _signInManager, _interaction,_jwtTokenService) = (userManager, signInManager, interaction,jwtTokenService);
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterViewModel viewModel)
+        public async Task<IActionResult> Register([FromBody]RegisterViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -49,7 +40,7 @@ namespace Notes.Identity.Controllers
 
             if (result.Succeeded)
             {
-                string token = "token";
+                string token = _jwtTokenService.GenerateToken(user);
                 return Ok(new { token = token });
             }
             var errors = string.Join(",", result.Errors.Select(e => e.Description));

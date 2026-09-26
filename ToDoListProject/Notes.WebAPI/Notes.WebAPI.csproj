@@ -23,12 +23,14 @@
 		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
 
 		<!-- Аутентификация и безопасность -->
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
 
 		<!-- Swagger и OpenAPI (Совместимый пакет Swashbuckle) -->
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
 
 		<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
+
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
 	</ItemGroup>
 
 	<ItemGroup>

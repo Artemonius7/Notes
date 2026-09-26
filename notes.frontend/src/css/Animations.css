@@ -1,0 +1,42 @@
+@keyframes fadeInUp{
+    from{
+        opacity: 0;
+        transform: translateY(30px); /* Кнопки появляются ниже своего итогового места*/
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Эффект появления для заметок */
+@keyframes noteAppear{
+    from{
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to{
+        opacity:1;
+        transform: translateX(0);
+    }
+}
+
+.note-fade-in {
+    opacity: 0;
+    animation: noteAppear 0.5s ease-out forwards;
+}
+
+.fade-in-button {
+    opacity: 0; /* изначально кнопка скрыта */
+    animation: fadeInUp 0.8s ease-out forwards; /* Сохраняет свое состояние после выполнения  */
+}
+
+/* каскадная задержка (stagger effect), чтобы кнопки появлялись друг за другом */
+.fade-in-button:nth-child(1) {animation-delay: 0.2s;}
+.fade-in-button:nth-child(2) {animation-delay: 0.4s;}
+.fade-in-button:nth-child(3) {animation-delay: 0.6s;}
+.fade-in-button:nth-child(4) {animation-delay: 0.8s;}
+
+.form-control:focus{
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.25) !important;
+    outline: none;
+}

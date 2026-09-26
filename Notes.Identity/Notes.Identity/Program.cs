@@ -9,6 +9,7 @@ using Duende.IdentityServer.Test;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
+using Notes.Identity.Token;
 var builder = WebApplication.CreateBuilder(args);
 // ƒобавл€ем контекст базы данных
 // ћожно писать как options, так и config : это обычна€ переменна€, котора€ отличаетс€ лишь названием и не несет системной смысловой нагрузки
@@ -61,6 +62,7 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddControllersWithViews(); // ƒобавление контроллеров и представлений дл€ нашего приложени€
 var app = builder.Build();
 app.UseRouting(); // »—пользовать маршрутизацию контроллеров
